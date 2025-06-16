@@ -19,4 +19,11 @@ $arrOptions=[
   "Trợ Sáng",
   "Sửa Đồng Hồ",
 ];
+
+// Chính sách bảo hành mặc định
+$defaultPolicy = "Bảo hành 12 tháng cho lỗi kỹ thuật từ nhà sản xuất.
+Đổi mới trong 30 ngày nếu sản phẩm bị lỗi không do người dùng.
+Bảo hành chống thấm nước và bụi bẩn theo tiêu chuẩn IP68.
+Hỗ trợ bảo trì miễn phí trong suốt thời gian bảo hành.
+Cam kết thay thế bóng đèn LED nếu bị mờ hoặc nhấp nháy bất thường.";
 ?>
