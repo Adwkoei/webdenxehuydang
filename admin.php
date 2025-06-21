@@ -327,19 +327,30 @@ require('system/head.php');
             <!-- Form thêm sản phẩm -->
             <div class="bg-gray-800 rounded-2xl p-6">
                 <h2 class="text-xl font-bold text-[#27f2f2] mb-4">Thêm sản phẩm mới</h2>
-                <form id="add-product-form" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-white mb-2">Tên đầy đủ *</label>
-                        <textarea name="name" required rows="3" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none resize-none" placeholder="VD: Đèn pha bi cầu LED cao cấp cho xe Wave 2020-2024 với công nghệ chiếu sáng hiện đại"></textarea>
+                <form id="add-product-form" class="space-y-6">
+                    <!-- Thông tin cơ bản -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-white mb-2 font-semibold">
+                                <i class="fas fa-tag text-[#27f2f2] mr-2"></i>Tên đầy đủ sản phẩm *
+                            </label>
+                            <textarea name="name" required rows="3" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none resize-none transition-colors" placeholder="VD: Đèn pha bi cầu LED cao cấp cho xe Wave 2020-2024 với công nghệ chiếu sáng hiện đại"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-white mb-2 font-semibold">
+                                <i class="fas fa-edit text-[#27f2f2] mr-2"></i>Tên rút gọn *
+                            </label>
+                            <input type="text" name="short_name" required class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none transition-colors" placeholder="VD: Bi cầu Wave">
+                        </div>
                     </div>
+
+                    <!-- Phân loại -->
                     <div>
-                        <label class="block text-white mb-2">Tên rút gọn *</label>
-                        <input type="text" name="short_name" required class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none" placeholder="VD: Bi cầu Wave">
-                    </div>
-                    <div>
-                        <label class="block text-white mb-2">Danh mục</label>
-                        <select name="category_id" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none">
-                            <option value="">Chọn danh mục</option>
+                        <label class="block text-white mb-2 font-semibold">
+                            <i class="fas fa-folder text-[#27f2f2] mr-2"></i>Danh mục sản phẩm
+                        </label>
+                        <select name="category_id" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none transition-colors">
+                            <option value="">Chọn danh mục (tùy chọn)</option>
                             <?php
                             $categories = $conn->query("SELECT * FROM categories ORDER BY short_name");
                             while ($cat = $categories->fetch_assoc()):
@@ -348,20 +359,42 @@ require('system/head.php');
                             <?php endwhile; ?>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-white mb-2">Link YouTube</label>
-                        <input type="url" name="youtube" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none" placeholder="https://youtube.com/...">
+
+                    <!-- Liên kết video -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-white font-semibold mb-4">
+                            <i class="fas fa-video text-[#27f2f2] mr-2"></i>Liên kết video (tùy chọn)
+                        </h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-300 mb-2">
+                                    <i class="fab fa-youtube text-red-500 mr-2"></i>Link YouTube
+                                </label>
+                                <input type="url" name="youtube" class="w-full px-4 py-3 rounded-lg bg-gray-600 text-white border border-gray-500 focus:border-[#27f2f2] focus:outline-none transition-colors" placeholder="https://youtube.com/...">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-2">
+                                    <i class="fab fa-tiktok text-pink-500 mr-2"></i>Link TikTok
+                                </label>
+                                <input type="url" name="tiktok" class="w-full px-4 py-3 rounded-lg bg-gray-600 text-white border border-gray-500 focus:border-[#27f2f2] focus:outline-none transition-colors" placeholder="https://tiktok.com/...">
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-white mb-2">Link TikTok</label>
-                        <input type="url" name="tiktok" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none" placeholder="https://tiktok.com/...">
+
+                    <!-- Mô tả chi tiết (không bắt buộc) -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-white font-semibold mb-2">
+                            <i class="fas fa-align-left text-[#27f2f2] mr-2"></i>Mô tả chi tiết (tùy chọn)
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-3">Bạn có thể bỏ trống phần này và thêm mô tả sau</p>
+                        <textarea name="content" rows="4" class="w-full px-4 py-3 rounded-lg bg-gray-600 text-white border border-gray-500 focus:border-[#27f2f2] focus:outline-none resize-none transition-colors" placeholder="Mô tả chi tiết về sản phẩm, tính năng, ưu điểm..."></textarea>
                     </div>
-                    <div class="lg:col-span-2">
-                        <label class="block text-white mb-2">Mô tả chi tiết (có thể để trống)</label>
-                        <textarea name="content" rows="6" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-[#27f2f2] focus:outline-none resize-none" placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
-                    </div>
-                    <div class="lg:col-span-2">
-                        <button type="submit" class="w-full bg-[#27f2f2] text-gray-900 py-3 rounded-lg font-semibold hover:bg-cyan-400 transition">Thêm sản phẩm</button>
+
+                    <!-- Nút submit -->
+                    <div class="flex justify-center">
+                        <button type="submit" class="bg-gradient-to-r from-[#27f2f2] to-cyan-400 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:from-cyan-400 hover:to-[#27f2f2] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>Thêm sản phẩm mới
+                        </button>
                     </div>
                 </form>
             </div>
