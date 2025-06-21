@@ -98,17 +98,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Xử lý xóa
+// Xử lý xóa danh mục
 if ($action === 'delete-category' && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
+    
+    // Kiểm tra xem danh mục có sản phẩm không
+    $checkStmt = $conn->prepare("SELECT COUNT(*) as count FROM products WHERE category_id = ?");
+    $checkStmt->bind_param("i", $id);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+    $productCount = $result->fetch_assoc()['count'];
+    $checkStmt->close();
+    
+    if ($productCount > 0) {
+        // Nếu có sản phẩm, chuyển các sản phẩm về không có danh mục
+        $updateStmt = $conn->prepare("UPDATE products SET category_id = NULL WHERE category_id = ?");
+        $updateStmt->bind_param("i", $id);
+        $updateStmt->execute();
+        $updateStmt->close();
+    }
+    
+    // Xóa danh mục
     $stmt = $conn->prepare("DELETE FROM categories WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $stmt->close();
-    header('Location: admin.php?action=categories');
+    
+    header('Location: admin.php?action=categories&message=delete_success');
     exit();
 }
 
+// Xử lý xóa sản phẩm
 if ($action === 'delete-product' && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
     
@@ -134,7 +154,7 @@ if ($action === 'delete-product' && isset($_GET['id'])) {
         $stmt->close();
     }
     
-    header('Location: admin.php?action=products');
+    header('Location: admin.php?action=products&message=delete_success');
     exit();
 }
 
@@ -193,6 +213,18 @@ require('system/head.php');
             QUẢN TRỊ WEBSITE
         </div>
     </h1>
+
+    <!-- Hiển thị thông báo thành công -->
+    <?php if (isset($_GET['message'])): ?>
+        <div class="mb-6">
+            <?php if ($_GET['message'] === 'delete_success'): ?>
+                <div class="bg-green-600 text-white p-4 rounded-lg text-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Xóa thành công!
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <!-- Menu điều hướng -->
     <div class="bg-gray-800 rounded-2xl p-6 mb-8">
@@ -310,7 +342,7 @@ require('system/head.php');
                                 <i class="fas fa-eye"></i>
                             </a>
                             <a href="admin.php?action=delete-category&id=<?= $category['id'] ?>" 
-                               onclick="return confirm('Bạn có chắc muốn xóa danh mục này?')" 
+                               onclick="return confirm('Bạn có chắc muốn xóa danh mục này? Các sản phẩm trong danh mục sẽ được chuyển về không phân loại.')" 
                                class="text-red-400 hover:text-red-300" title="Xóa">
                                 <i class="fas fa-trash"></i>
                             </a>
@@ -434,7 +466,7 @@ require('system/head.php');
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="admin.php?action=delete-product&id=<?= $product['id'] ?>" 
-                                           onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')" 
+                                           onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này? Tất cả dữ liệu và hình ảnh sẽ bị xóa vĩnh viễn.')" 
                                            class="text-red-400 hover:text-red-300" title="Xóa">
                                             <i class="fas fa-trash"></i>
                                         </a>
